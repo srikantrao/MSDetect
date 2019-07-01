@@ -1,2 +1,5 @@
-data/
-param/
+data/*
+param/*
+models/*
+logs/*
+*.pyc
