@@ -1,6 +1,11 @@
 ## MSDetect - Eye tracking for detection of Mutliple Sclerosis
 
+This repo contains the work done as an Insight Artifical Intelligence Fellow, consulting for a company that is using state of the art high-resolution Pupil tracking hardware combined with AI to change the way Multiple Sclerosis is diagnosed and tracked in patients. 
 
+The current model uses a model that uses engineering features that are captured by hand-labelling pupil trace data. 
+
+I worked on exploring whether 
+ 
 
 ###  Environment Setup 
 
@@ -30,6 +35,11 @@ This will create a new environment called `tsc-linux` with all of the necessaryp
 
 ### Results 
 
+#### Micro-Saccade distribution
+
+#### Age distribution in Controls and in Patients 
+
+The controls are included
 ### Acknowledgements
 
 
