@@ -9,7 +9,7 @@ import csv
 import logging 
 import scipy.signal
 from typing import List
-from data_types import Xygroup
+from utils.data_types import Xygroup
 from collections import defaultdict
 
 logging = logging.getLogger(__name__)
