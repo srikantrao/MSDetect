@@ -3,3 +3,7 @@ param/*
 models/*
 logs/*
 *.pyc
+
+
+# Exceptions to the rule 
+!models/.gitkeep
