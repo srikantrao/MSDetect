@@ -42,7 +42,7 @@ conda activate msdetect
 Training on one of the models can be performed by using the following commands. 
 
 ```commandline
-python src/train.py ms-classfication 
+python src/train.py ms-classfication [ARGUMENTS] 
 ```
 
 A summary of the additional parameters is provided below - 
@@ -96,7 +96,7 @@ A summary of the additional parameters is provided below -
 Inference can be run on a sample patient trace using the following command along with the relevant parameters. 
 
 ```
-python src/inferece.py ms-infer
+python src/inferece.py ms-infer [ARGUMENTS]
 ```
 
 ##### Inference Parameters 
@@ -120,7 +120,7 @@ patient traces.
 ##### Running the script 
 
 ```
-python count_saccades.py
+python count_saccades.py [ARGUMENTS]
 ```
 
 ##### Parameters 
