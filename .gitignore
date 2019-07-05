@@ -7,4 +7,4 @@ logs/*
 
 # Exceptions to the rule 
 !models/.gitkeep
-!*README.md*!
+!*README.md*

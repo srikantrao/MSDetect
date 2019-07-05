@@ -521,8 +521,8 @@ class Tasks:
             model = KerasClassifier(
                 resnet_build_fn_closure(input_shape, log_dir=log_dir,
                                         drop_rate=drop_rate), 
-                                        batch_size=batch_size, 
-                                        epochs=epochs)
+                batch_size=batch_size, 
+                epochs=epochs)
         
             # How many input channels 
             in_channel = X_train.shape[2]
