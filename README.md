@@ -114,5 +114,20 @@ python src/inferece.py ms-infer
 
 #### Counting Saccades
 
+The current model works on features that have been labelled by hand. This is a cumbersome process and this script automates the detection of micro-saccades in the 
+patient traces. 
 
+##### Running the script 
 
+```
+python count_saccades.py
+```
+
+##### Parameters 
+
+ - `file_dir`
+	- Directory which contains all the pupil traces.
+ - `csv_file`
+	- File path to which the micro-saccade information for each trace should be saved.
+ - `amplitude`
+	- Minimum micro-saccade of amplitude to detect. Default is set to `0.15`
