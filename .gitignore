@@ -3,7 +3,8 @@ param/*
 models/*
 logs/*
 *.pyc
-
+src/models/lstm_model.py
+src/models/resnet_model.py
 
 # Exceptions to the rule 
 !models/.gitkeep

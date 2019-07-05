@@ -19,7 +19,7 @@ from scipy.io import loadmat
 import scipy.signal
 from sklearn.decomposition import PCA
 
-from data_types import Xygroup
+from utils.data_types import Xygroup
 
 logger = logging.getLogger(__name__)
 

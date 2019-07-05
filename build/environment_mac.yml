@@ -1,4 +1,4 @@
-name: tsc-mac
+name: msdetect
 channels:
   - conda-forge
   - defaults
