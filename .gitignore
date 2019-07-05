@@ -5,6 +5,8 @@ logs/*
 *.pyc
 src/models/lstm_model.py
 src/models/resnet_model.py
+*__pycache__*
+
 
 # Exceptions to the rule 
 !models/.gitkeep
