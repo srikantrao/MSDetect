@@ -53,7 +53,7 @@ A summary of the additional parameters is provided below -
  - `--patient_file_path`
      - Path to patient health information file. 
  - `--model_path`
-    - Path to which the model should be saved. By default it gets saved in the `params` folder. 
+    - Path to which the model should be saved. By default it gets saved in the `models` folder. 
 - `model_name`
     - Model name of the saved model.  
  - `--num_layers`
@@ -77,8 +77,19 @@ A summary of the additional parameters is provided below -
 - `--flip`
    - Whether or not to augment the trace data by flipping the traces.
  - `--test-fraction`
-   - Test set fraction. 
-
+   - Test set fraction.
+ - `--epochs`
+	- Number of Epocs to perform training for. Default value is 100.
+ - `log_dir`
+ 	- Path to which tensorboard data will be saved. Default value is `logs/fit`
+  - `--use_spectrogram`
+	- Uses spectrogram data instead of raw time series data for the case of the LSTM model. 
+ - `--ms_only`
+	- Use this to perform classification between `mild ms` and `severe ms` based on [`EDSS`](https://www.mstrust.org.uk/a-z/expanded-disability-status-scale-edss) score of the patient. 
+ - `--use_lstm` 
+	- Uses the LSTM based model if this is set to `True`. Uses the ResNet based model otherwise.
+ - `--verbose`
+	- Print additional information that will be useful for debug.
 
 #### Inference  
 

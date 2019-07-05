@@ -52,15 +52,15 @@ logger = logging.getLogger(__name__)
 
 class Train: 
     """
-    Class to perform training on the given dataset.
+    Train the model on the clinical trial pupil trace data. 
+    Perform classication on MS vs No-Ms or Mild MS vs Severe MS.
     """
-
     def ms_classification(
         self,
         data_dir = "/data/envision_working_traces/",
         patient_file_path = "../data/patient_stats.csv",
-        model_path = "../params",
-        model_name = "model_ver6",
+        model_path = "../models",
+        model_name = "model_test",
         num_layers = 8,
         lr = 0.0005,
         drop_rate = 0.2,
