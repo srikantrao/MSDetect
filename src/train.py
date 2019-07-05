@@ -66,7 +66,7 @@ class Train:
         drop_rate = 0.2,
         num_folds = 1,
         num_splits = 1,
-        flip_y = False,
+        flip = False,
         random_seed = None,
         test_fraction = 0.1,
         filter_age = None,
@@ -102,7 +102,7 @@ class Train:
             Number of cross validation folds for k-fold cross validation
         num_splits
             Number of splits to break up each trace into
-        flip_y
+        flip
             Whether or not to duplicate the trace data by flipping the y trace
         random_seed
             Random seed to use in splitting data
@@ -177,7 +177,7 @@ class Train:
             print(f"Shape of the Input is : {X_train.shape}")
         
         # Double the dataset by including the flipped version of the inputs
-        if flip_y:
+        if flip:
             X_train, y_train, subject_ids_train = data_manipulation.flip_y_traces(
                 X_train, y_train, subject_ids_train
             )

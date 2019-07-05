@@ -70,14 +70,12 @@ A summary of the additional parameters is provided below -
    - Random Seed to be used. 
  - `--test_fraction`
 	- Fraction of samples to be used for testing.
- - `--filter-age`
-   - If included filter out any subjects whose age is >= the filter age
  - `--batch_size`
     Batch Size to be used for training. Default value is 32.
  - `--early_stopping`
-    Switch to enable or disable   
-- `--flip-y`
-   - Whether or not to duplicate the trace data by flipping the traces.
+    - Switch to enable early stopping. Default is set to `True`   
+- `--flip`
+   - Whether or not to augment the trace data by flipping the traces.
  - `--test-fraction`
    - Test set fraction. 
 
@@ -85,23 +83,6 @@ A summary of the additional parameters is provided below -
 #### Inference  
 
 #### Counting Saccades
-
-### Models
-
-Two kind of models are available can be used to determine  
-
-### Results 
-
-#### Micro-Saccade distribution
-
-#### Age distribution in Controls and in Patients 
-
-The controls are included
-### Acknowledgements
-
-
-### References  
-[1] Sheehy et al: J Neuro-Ophthalmol 2018; 38: 488-493
 
 
 
