@@ -129,5 +129,9 @@ python count_saccades.py
 	- Directory which contains all the pupil traces.
  - `csv_file`
 	- File path to which the micro-saccade information for each trace should be saved.
- - `amplitude`
+ - `--amplitude`
 	- Minimum micro-saccade of amplitude to detect. Default is set to `0.15`
+ - `--num_samples`
+	- Number of samples to use for calculating the micro-saccades. If the value is below 4600, it is downsampled to the provided value. Default is `1150` 
+ - `--verbose`
+	- Print additional information useful for debug.
