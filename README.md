@@ -49,27 +49,27 @@ A summary of the additional parameters is provided below -
 
 ##### Training parameters 
  - `--data_dir`
-     Path to the directory which contains *.mat or *.npy pupil traces.
+     - Path to the directory which contains *.mat or *.npy pupil traces.
  - `--patient_file_path`
-     Path to patient health information file. 
+     - Path to patient health information file. 
  - `--model_path`
-    Path to which the model should be saved. By default it gets saved in the `params` folder. 
+    - Path to which the model should be saved. By default it gets saved in the `params` folder. 
 - `model_name`
-    Model name of the saved model.  
+    - Model name of the saved model.  
  - `--num_layers`
-    Number of layers to use in the ResNet model. Default value is 8.
+    - Number of layers to use in the ResNet model. Default value is 8.
  - `--lr`
-    learning rate to be used for training. Default value is 0.0005 
+    - Learning rate to be used for training. Default value is 0.0005 
  - `--drop_rate`
-    Dropout rate to be used for the Conv layers. Default value is 0.2 
+    - Dropout rate to be used for the Conv layers. Default value is 0.2 
  - `--num-folds`
    - Number of folds to use for cross validation. Default value is 1. 
  - `--num-splits`
    - Number of splits to break up each trace into. Default value is 1. Changing this parameter is not recommended.
  - `--random_seed`
-     Random Seed to be used. 
+   - Random Seed to be used. 
  - `--test_fraction`
-	Fraction of samples to be used for testing.
+	- Fraction of samples to be used for testing.
  - `--filter-age`
    - If included filter out any subjects whose age is >= the filter age
  - `--batch_size`
@@ -82,11 +82,13 @@ A summary of the additional parameters is provided below -
    - Test set fraction. 
 
 
-#### Testing  
+#### Inference  
 
 #### Counting Saccades
 
-### Models 
+### Models
+
+Two kind of models are available can be used to determine  
 
 ### Results 
 
