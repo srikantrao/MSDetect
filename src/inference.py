@@ -1,41 +1,87 @@
-import argparse 
+"""
+Script to run inference using on single test cases.
+Pre-trained (TF or Keras) model is loaded and inference is run.
+Author - Srikant
+"""
+
+# Import modules
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import streamlit as st
+import scipy.signal
+import argparse
+import fire
+from keras.models import load_model
+import utils.data_manipulation
+import utils.pre_processing
+import utils.inference_utils
+import os 
+import utils.plot_utils
 
-import tensorflow as tf
-from tensorflow.python.framework import graph_io
-from tensorflow.keras.models import load_model
+# Show only Error logs for Tensorflow
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+np.set_printoptions(2)
 
-# Clear any previous session.
-tf.keras.backend.clear_session()
+class Inference:
+    """
+    Running inference on the pupil trace of a patient. 
+    Plots the trace and provides prediction based on provided threshold.
+    """
+    def ms_infer(self, model_name = "./output/resnet_overfit_6layer.h5",
+                 input_file = "/data/envision_working_traces/20107r_V002_meanrem_480_hz_7738.matvelocity.fig.mat",
+                 patient_file_path="/home/shrikant/EnVision/data/patient_stats.csv",
+                 plot_trace=True,
+                 verbose=True):
 
-save_pb_dir = './model'
-model_fname = './model/model.h5'
-def freeze_graph(graph, session, output, save_pb_dir='.', save_pb_name='frozen_model.pb', save_pb_as_text=False):
-    with graph.as_default():
-        graphdef_inf = tf.graph_util.remove_training_nodes(graph.as_graph_def())
-        graphdef_frozen = tf.graph_util.convert_variables_to_constants(session, graphdef_inf, output)
-        graph_io.write_graph(graphdef_frozen, save_pb_dir, save_pb_name, as_text=save_pb_as_text)
-        return graphdef_frozen
+        st.write("Running Inference on Pupil traces ")
 
-# This line must be executed before loading Keras model.
-tf.keras.backend.set_learning_phase(0)
+        # Load the Model
+        inference_model = load_model(str(model_name))
 
-model = load_model(model_fname)
+        if verbose:
+            inference_model.summary()
 
-session = tf.keras.backend.get_session()
+        # Load the Input trace
+        if verbose:
+            st.write(f"Matrix file has been loaded.")
+        trace = inference_utils.read_single_trace(input_file,
+                                                  patient_file_path,
+                                                  start_index = 10)
 
-INPUT_NODE = [t.op.name for t in model.inputs]
-OUTPUT_NODE = [t.op.name for t in model.outputs]
-print(INPUT_NODE, OUTPUT_NODE)
-frozen_graph = freeze_graph(session.graph, session, [out.op.name for out in model.outputs], save_pb_dir=save_pb_dir)
+        # Get Hold of all the features used
+        X, y, subject_ids = pre_processing.traces_to_feature([trace], velocity=False, mean_center=True, scale_std=True)
+        
+        # Make inputs channel last 
+        X = data_manipulation.channel_last(X)
+        st.write(X.shape)
+        diff = X[0, :, 0] - X[0, :, 1]
+        st.write(diff[0:50])
+        y = y.astype(np.int32).squeeze()
+        
+        if plot_trace:
+            plot_utils.plotXY(X, "Time Steps", "Position", use_streamlit=True, title="X and Y Pupil traces")
 
+        # Predict the label
+        y_pred = inference_model.predict(X)
 
-### Load a Model 
+        # Predict the output of the trace
+        y_est = np.argmax(y_pred)
 
+        if y_est == y:
+            st.write(f"Correct prediction. Label : {y}. Predicted: {y_est}")
+        else:
+            st.write(f"Wrong Prediciton. Label : {y}. Predicted: {y_est}")
+       
+        # Print out additional information
+        if verbose:
+            st.write(f"Prediction : {y_pred}")
+            if y == 1:
+                st.write(f"EDSS Score is: {trace.sub_edss}")
+        
 
-## Pre-process Image 
-
-
-## Run inference using Keras Predict 
+if __name__ == "__main__":
+    
+    fire.Fire(Inference)

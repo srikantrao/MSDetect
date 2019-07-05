@@ -49,7 +49,7 @@ A summary of the additional parameters is provided below -
 
 ##### Training parameters 
  - `--data_dir`
-     - Path to the directory which contains *.mat or *.npy pupil traces.
+     - Path to the directory which contains `*.mat` or `*.npy` pupil traces.
  - `--patient_file_path`
      - Path to patient health information file. 
  - `--model_path`
@@ -92,6 +92,25 @@ A summary of the additional parameters is provided below -
 	- Print additional information that will be useful for debug.
 
 #### Inference  
+
+Inference can be run on a sample patient trace using the following command along with the relevant parameters. 
+
+```
+python src/inferece.py ms-infer
+```
+
+##### Inference Parameters 
+
+ - `--model_name`
+	- Full path to the saved model.
+ - `--input_file`
+	- Path to the file containing the pupil trace.
+ - `--patient_file_path`
+	- Path to the patient information file from the clinical trial.
+ - `--plot_trace`
+	- Plot the patient pupil trace.
+ - `--verbose`
+	- Print additional information useful for debug.
 
 #### Counting Saccades
 
