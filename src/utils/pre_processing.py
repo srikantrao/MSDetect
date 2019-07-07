@@ -168,7 +168,7 @@ def use_dist(array):
     X = np.sqrt(np.power(array[:, 0, :], 2) + np.power(array[: , 1, :], 2))
     return np.reshape(X, newshape = (X.shape[0], 1, X.shape[1]))
 
-def build_dict(csv_path, row = 10):
+def build_dict(csv_path, row = 3):
     """
     Build a Dict. Key = Subject ID. Value = List of Micro-saccades observed in readings
     @csv_path: Path to the csv file
@@ -182,7 +182,7 @@ def build_dict(csv_path, row = 10):
             if index == 0:
                 continue
             line = line.strip().split(",")
-            sub_id = int(line[1])
+            sub_id = int(line[0])
             saccades = int(line[row])
             subject_dict[sub_id].append(saccades)
     

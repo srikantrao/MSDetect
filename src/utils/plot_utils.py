@@ -60,7 +60,7 @@ def plot_random_traces(array, nrows, ncols, xlabel="X axis",
     plt. tight_layout()
 
 def plot_histogram(data, title="title", xlabel="X axis", ylabel="Y Axis",
-                   density=False ):
+                   density=False, hist_range = None):
     """
     Using Object Oriented API of matplotlib to plot plot_histogram
     """
@@ -68,14 +68,8 @@ def plot_histogram(data, title="title", xlabel="X axis", ylabel="Y Axis",
     ax = fig.add_subplot(111)
 
     N, bins, patches = ax.hist(data, edgecolor='white', linewidth=1,
-                               normed = density)
-    length = len(patches)
-    for i in range(0, length // 3):
-        patches[i].set_facecolor('b')
-    for i in range(length // 3 , 2 * length // 3):    
-        patches[i].set_facecolor('r')
-    for i in range(2 * length // 3, len(patches)):
-        patches[i].set_facecolor('black')
+                               density = density, stacked = True, 
+                               range = hist_range, color = "orange")
     
     # Set the Labels and the titles 
     ax.set_xlabel(xlabel)
@@ -94,7 +88,7 @@ def plot_line(y_data, x_data = None, title = "Title",
     fig = plt.figure()
     ax = fig.add_subplot(111)
     
-    if x_data == None:
+    if not x_data:
         plt.plot(y_data, color='r', marker='o')
     else:
         plt.plot(x_data, y_data, color = 'r')
@@ -114,17 +108,14 @@ def plot_line(y_data, x_data = None, title = "Title",
     
 def set_plot_properties():
     
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    
-    # Set the Labels and the titles 
+    fig, ax = plt.subplots() 
     
     # Set grid as the background 
     ax.set_axisbelow(True)
     ax.yaxis.grid(color = 'gray', linestyle = 'dashed')
     ax.xaxis.grid(color = 'gray', linestyle = 'dashed')
     
-    return fig  
+    return fig, ax  
 
 def plot_all_traces(file_path, subject_id):
     """
@@ -157,6 +148,4 @@ def plot_all_traces(file_path, subject_id):
         pl.xaxis.grid(color = 'gray', linestyle = 'dashed')
         pl.set_xlabel("Time Series")
         pl.set_ylabel("Amplitude Degrees")
-    return fig 
-
-    
+    return fig  

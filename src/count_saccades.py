@@ -42,7 +42,7 @@ def count_saccades(file_path, num_samples = 4600,
     if num_samples < 4600:
         trace = pre_processing.downsample_traces(trace, num_samples, axis = 1)
         if verbose:
-            print(f"Trace was down sampled to {trace.shape[1]}")
+            print(f"Trace {tail} was down sampled to {trace.shape[1]}")
     
     # Convert Numpy Array to a DataFrame
     df = pd.DataFrame.from_records(trace)
@@ -79,8 +79,7 @@ def count_saccades(file_path, num_samples = 4600,
     # values = derv[abs(derv) > amplitude]
     
     if verbose:
-        print(values)
-        print(indices)
+        print(f"Number of Saccades: {values}. List of time stamps : {indices}")
     if plot_trace:
         plot_utils.plot_line(df['X'], title = file_path)
         st.pyplot()
@@ -126,7 +125,6 @@ def build_csv(num_saccades_list, csv_file, append=False, verbose = False):
         for file_name, num_saccades in num_saccades_list:
             file_name = os.path.basename(file_name)
             
-            print(file_name)
             sub_id, ver, eye = file_name.split("_")[0:3]
 
             line = [sub_id] + ["1" if eye == "L" else "2"] + [ver]
@@ -156,44 +154,39 @@ def build_saccades_csv(file_dir, csv_file, amplitude = 0.2, num_samples = 4600, 
 
 def run_logistic_regression(csv_file = "./data/automated_saccades_frequency.csv",
                             patients_file = "/home/shrikant/EnVision/data/updated_patients_stats.csv",                            
+                            test_fraction = 0.1,
                             verbose = True):
 
     # Load the csv file 
     sac_pd = pd.read_csv(csv_file)
     if verbose:
+        print("Head of the Saccade Frequency Dataframe")
         print(sac_pd.head())
-        print(f"Number of column in dataframe: {sac_pd.shape}")
+        print(f"Num Rows: {sac_pd.shape[0]}. Num Cols : {sac_pd.shape[1]}")
 
     # Load the patients file 
     pat_pd = pd.read_csv(patients_file)
     if verbose:
+        print("Head of the Patient Information Dataframe")
         print(pat_pd.head())
-        print(f"Number of columns in Patient Dataframe: {pat_pd.shape}")
+        print(f"Num rows: {pat_pd.shape[0]}. Num Cols: {pat_pd.shape[1]}")
     
     # Generate X, y, subject_id 
     X = sac_pd['num_saccades'].values
     subject_id = sac_pd['subject_id'].values
     y = pd.merge(sac_pd, pat_pd, left_on = "subject_id", right_on = "Subject ID")["MS"].values
 
-    for i in range(400, 500):
-        print(pat_pd[pat_pd["Subject ID"] == subject_id[i]]["MS"])
-        print(f"X: {X[i]}. ID: {subject_id[i]}. Y: {y[i]}")
-
     if verbose:
-        print(f"Shape of the Input X: {X.shape}")
-        print(f"Shape of the subject_id: {subject_id.shape}")
+        print(f"Number of Samples : {X.shape[0]}")
         print(f"{sac_pd.subject_id.dtype}. {pat_pd['Subject ID'].dtype}. {pat_pd['MS'].dtype}")
         print(f"Shape of the Labels: {y.shape}")   
     
     # Build Group based Test and Train split
-    X_train, X_test, y_train, y_test, subid_train, subid_test = validation.grouped_train_test_split(X, y, subject_id, test_fraction = 0.1) 
+    X_train, X_test, y_train, y_test, subid_train, subid_test = validation.grouped_train_test_split(X, y, subject_id, test_fraction = test_fraction) 
    
     # Perform a Reshape 
     X_train = np.reshape(X_train, newshape = (-1, 1))
     X_test = np.reshape(X_test, newshape = (-1, 1))
-    if verbose:
-        print(f"Shape of X_train: {X_train.shape}")
-        print(f"Shape of subid_train: {subid_train.shape}")
 
     # Build a model and fit it
     log_model = LogisticRegressionCV(cv=5)
@@ -202,7 +195,7 @@ def run_logistic_regression(csv_file = "./data/automated_saccades_frequency.csv"
     acc = accuracy_score(y_test, logistic_results)
     print(f"Test Accuracy is: {acc:.2f}")  
 
-def run_saccade_regression(file_dir, csv_file, patients_file, amplitude, num_samples, append, verbose):
+def run_saccade_regression(file_dir, csv_file, patients_file, test_fraction = 0.1, amplitude = 0.15, num_samples = 1150, append = False, verbose = False):
     """
     Build the saccades csv file and then run logistic regression on it. 
     @param file_dir:  
@@ -216,7 +209,7 @@ def run_saccade_regression(file_dir, csv_file, patients_file, amplitude, num_sam
                        plot_trace = False)
 
     # Run Logistic regression and print the output
-    run_logistic_regression(csv_file = csv_file, patients_file = patients_file, verbose = verbose)
+    run_logistic_regression(csv_file = csv_file, patients_file = patients_file, test_fraction = test_fraction, verbose = verbose)
     
 
 if __name__ == "__main__":
@@ -233,27 +226,27 @@ if __name__ == "__main__":
                         help = "Number of Samples to downsample to.")
     parser.add_argument("--verbose", type = str, default = "false", 
                         help = "Prints additional information during processing.")
-    parser.add_argument("--append", type = str, default = "true",
+    parser.add_argument("--append", type = str, default = "false",
                         help = "Append the micro-saccades frequency to the csv.")
     parser.add_argument("--patients_file", type = str, default = "/home/shrikant/EnVision/data/updated_patients_stats.csv",
                         help = "Path to the file that contains all the patient information for the trial")
+    parser.add_argument("--test_fraction", type = float, default = 0.1,
+                        help = "The fraction of dataset that should be used for testing.")
     FLAGS = parser.parse_args()
     append = False 
     verbose = False
-    plot_trace = False
     
     if FLAGS.append.lower() == "true":
         append = True
     if FLAGS.verbose.lower() == "true":
         verbose = True
-    if FLAGS.plot_trace.lower() == "true":
-        plot_trace = True
     
     # Count Saccades and then run logisitc Regression
     run_saccade_regression(file_dir = FLAGS.file_dir,
                            csv_file = FLAGS.csv_file,
-                           amplitdue = FLAGS.amplitude,
+                           amplitude = FLAGS.amplitude,
                            num_samples = FLAGS.num_samples,
                            patients_file = FLAGS.patients_file,
+                           test_fraction = FLAGS.test_fraction,
                            append = append,
-                           verbose = FLAGS.verbose)
+                           verbose = verbose)
