@@ -42,7 +42,7 @@ conda activate msdetect
 Training on one of the models can be performed by using the following commands. 
 
 ```commandline
-python src/train.py ms-classfication [ARGUMENTS] 
+python src/train.py ms-classification [ARGUMENTS] 
 ```
 
 A summary of the additional parameters is provided below - 
@@ -112,10 +112,11 @@ python src/inferece.py ms-infer [ARGUMENTS]
  - `--verbose`
 	- Print additional information useful for debug.
 
-#### Counting Saccades
+#### Counting Saccades and running logistic regression
 
 The current model works on features that have been labelled by hand. This is a cumbersome process and this script automates the detection of micro-saccades in the 
-patient traces. 
+patient traces.
+Once the saccades frequency has been calculated for each of the traces, logistic regression is run on the dataset.  
 
 ##### Running the script 
 
@@ -135,3 +136,7 @@ python count_saccades.py [ARGUMENTS]
 	- Number of samples to use for calculating the micro-saccades. If the value is below 4600, it is downsampled to the provided value. Default is `1150` 
  - `--verbose`
 	- Print additional information useful for debug.
+- `--append`
+	- Append to an existing csv file if you are trying it on a smaller subset. Default value is `False` and it is not recommended that this be changed.
+ - `--patients_file`
+	- Path to the file that contains the information of the patients involved in the trial.   
