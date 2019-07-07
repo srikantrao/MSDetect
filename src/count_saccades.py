@@ -1,6 +1,6 @@
 """
 Count the number of saccades in the Pupil trace.
-Provide some additional information along with that as well.
+Perform logistic regression using the saccade frequency to classify MS vs Non-MS
 """
 
 import numpy as np
@@ -11,9 +11,12 @@ import os
 import matplotlib.pyplot as plt 
 import re
 import scipy.signal
+from sklearn.linear_model import LogisticRegressionCV 
+from sklearn.metrics import accuracy_score
 from utils import pre_processing
 from utils import plot_utils
 import argparse
+from utils import validation
 
 def count_saccades(file_path, num_samples = 4600, 
                    amplitude = 0.1, verbose = False,
@@ -118,7 +121,7 @@ def build_csv(num_saccades_list, csv_file, append=False, verbose = False):
         write_mode = "w"
 
     with open(csv_file, write_mode) as f:
-        f.write("subject_id,eye,version,num_traces\n") 
+        f.write("subject_id,eye,version,num_saccades\n") 
 
         for file_name, num_saccades in num_saccades_list:
             file_name = os.path.basename(file_name)
@@ -151,13 +154,78 @@ def build_saccades_csv(file_dir, csv_file, amplitude = 0.2, num_samples = 4600, 
         print(f"Micro Saccade frequency has been written to {csv_file}")
 
 
+def run_logistic_regression(csv_file = "./data/automated_saccades_frequency.csv",
+                            patients_file = "/home/shrikant/EnVision/data/updated_patients_stats.csv",                            
+                            verbose = True):
+
+    # Load the csv file 
+    sac_pd = pd.read_csv(csv_file)
+    if verbose:
+        print(sac_pd.head())
+        print(f"Number of column in dataframe: {sac_pd.shape}")
+
+    # Load the patients file 
+    pat_pd = pd.read_csv(patients_file)
+    if verbose:
+        print(pat_pd.head())
+        print(f"Number of columns in Patient Dataframe: {pat_pd.shape}")
+    
+    # Generate X, y, subject_id 
+    X = sac_pd['num_saccades'].values
+    subject_id = sac_pd['subject_id'].values
+    y = pd.merge(sac_pd, pat_pd, left_on = "subject_id", right_on = "Subject ID")["MS"].values
+
+    for i in range(400, 500):
+        print(pat_pd[pat_pd["Subject ID"] == subject_id[i]]["MS"])
+        print(f"X: {X[i]}. ID: {subject_id[i]}. Y: {y[i]}")
+
+    if verbose:
+        print(f"Shape of the Input X: {X.shape}")
+        print(f"Shape of the subject_id: {subject_id.shape}")
+        print(f"{sac_pd.subject_id.dtype}. {pat_pd['Subject ID'].dtype}. {pat_pd['MS'].dtype}")
+        print(f"Shape of the Labels: {y.shape}")   
+    
+    # Build Group based Test and Train split
+    X_train, X_test, y_train, y_test, subid_train, subid_test = validation.grouped_train_test_split(X, y, subject_id, test_fraction = 0.1) 
+   
+    # Perform a Reshape 
+    X_train = np.reshape(X_train, newshape = (-1, 1))
+    X_test = np.reshape(X_test, newshape = (-1, 1))
+    if verbose:
+        print(f"Shape of X_train: {X_train.shape}")
+        print(f"Shape of subid_train: {subid_train.shape}")
+
+    # Build a model and fit it
+    log_model = LogisticRegressionCV(cv=5)
+    log_model.fit(X_train, y_train)
+    logistic_results = log_model.predict(X_test)
+    acc = accuracy_score(y_test, logistic_results)
+    print(f"Test Accuracy is: {acc:.2f}")  
+
+def run_saccade_regression(file_dir, csv_file, patients_file, amplitude, num_samples, append, verbose):
+    """
+    Build the saccades csv file and then run logistic regression on it. 
+    @param file_dir:  
+    """
+    build_saccades_csv(file_dir = file_dir, 
+                       csv_file = csv_file, 
+                       amplitude = amplitude,
+                       num_samples = num_samples,
+                       append = append,
+                       verbose = verbose,
+                       plot_trace = False)
+
+    # Run Logistic regression and print the output
+    run_logistic_regression(csv_file = csv_file, patients_file = patients_file, verbose = verbose)
+    
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    # File Directory 
+    # Add arguments
     parser.add_argument("--file_dir", type = str, default = "/home/shrikant/EnVision/tsc/mat/patient_mat",
                         help = "Path to the directory which contains the traces")
-    parser.add_argument("--csv_file", type = str, default = "./automated_saccades_frequency.csv",
+    parser.add_argument("--csv_file", type = str, default = "./labelled_saccades_frequency.csv",
                         help = "File Name to which micro-saccade frequency should be saved")
     parser.add_argument("--amplitude", type = float, default = 0.15,
                         help = "Minimum Amplitude to classify as a saccade")
@@ -165,24 +233,27 @@ if __name__ == "__main__":
                         help = "Number of Samples to downsample to.")
     parser.add_argument("--verbose", type = str, default = "false", 
                         help = "Prints additional information during processing.")
-    parser.add_argument("--append", type = bool, default = True,
+    parser.add_argument("--append", type = str, default = "true",
                         help = "Append the micro-saccades frequency to the csv.")
-    
-    parser.add_argument("--plot_trace", type = str, default = "True", 
-                        help = "Plot the traces to help with debug.") 
+    parser.add_argument("--patients_file", type = str, default = "/home/shrikant/EnVision/data/updated_patients_stats.csv",
+                        help = "Path to the file that contains all the patient information for the trial")
     FLAGS = parser.parse_args()
-    
+    append = False 
     verbose = False
     plot_trace = False
+    
+    if FLAGS.append.lower() == "true":
+        append = True
     if FLAGS.verbose.lower() == "true":
         verbose = True
     if FLAGS.plot_trace.lower() == "true":
         plot_trace = True
-    # Run
-    build_saccades_csv(file_dir = FLAGS.file_dir, 
-                       csv_file = FLAGS.csv_file, 
-                       amplitude = FLAGS.amplitude,
-                       num_samples = FLAGS.num_samples,
-                       append = FLAGS.append,
-                       verbose = verbose,
-                       plot_trace = plot_trace)
+    
+    # Count Saccades and then run logisitc Regression
+    run_saccade_regression(file_dir = FLAGS.file_dir,
+                           csv_file = FLAGS.csv_file,
+                           amplitdue = FLAGS.amplitude,
+                           num_samples = FLAGS.num_samples,
+                           patients_file = FLAGS.patients_file,
+                           append = append,
+                           verbose = FLAGS.verbose)
