@@ -2,7 +2,7 @@
 
 This repo contains the work done as an Insight Artifical Intelligence Fellow, consulting for a company that is using state of the art high-resolution pupil tracking hardware combined with AI to change the way Multiple Sclerosis is diagnosed and tracked in patients. 
 
-Recent medical literature has explored the relationship between macular degeneration and the progression of multiple sclerosis in patients[1].
+Recent medical literature has explored the relationship between macular degeneration and the progression of multiple sclerosis in patients.
 
 The current model uses a model that uses engineering features that are captured by hand-labelling pupil trace data. 
 
@@ -131,7 +131,7 @@ python count_saccades.py [ARGUMENTS]
  - `csv_file`
 	- File path to which the micro-saccade information for each trace should be saved.
  - `--amplitude`
-	- Minimum micro-saccade of amplitude to detect. Default is set to `0.15`
+	- Minimum micro-saccade of amplitude to detect.
  - `--num_samples`
 	- Number of samples to use for calculating the micro-saccades. If the value is below 4600, it is downsampled to the provided value. Default is `1150` 
  - `--verbose`

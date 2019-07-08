@@ -19,7 +19,7 @@ import argparse
 from utils import validation
 
 def count_saccades(file_path, num_samples = 4600, 
-                   amplitude = 0.1, verbose = False,
+                   amplitude = 0.0, verbose = False,
                    plot_trace = False):
     """
     Count the Number of X and Y micro-saccades.
@@ -87,7 +87,7 @@ def count_saccades(file_path, num_samples = 4600,
     return values
 
 
-def count_saccades_in_dir(file_dir, amplitude = 0.2,
+def count_saccades_in_dir(file_dir, amplitude = 0.0,
                           num_samples = 4600, verbose = False,
                           plot_trace = False):
     """
@@ -132,7 +132,7 @@ def build_csv(num_saccades_list, csv_file, append=False, verbose = False):
             f.write(",".join(line) + "\n")
 
 
-def build_saccades_csv(file_dir, csv_file, amplitude = 0.2, num_samples = 4600, append = False, verbose = False, plot_trace = False):
+def build_saccades_csv(file_dir, csv_file, amplitude = 0.0, num_samples = 4600, append = False, verbose = False, plot_trace = False):
     """
     Build a csv which holds information about the number of saccades in each     trace.
     @param file_dir: the directory which contains all the traces
@@ -195,7 +195,7 @@ def run_logistic_regression(csv_file = "./data/automated_saccades_frequency.csv"
     acc = accuracy_score(y_test, logistic_results)
     print(f"Test Accuracy is: {acc:.2f}")  
 
-def run_saccade_regression(file_dir, csv_file, patients_file, test_fraction = 0.1, amplitude = 0.15, num_samples = 1150, append = False, verbose = False):
+def run_saccade_regression(file_dir, csv_file, patients_file, test_fraction = 0.1, amplitude = 0.0, num_samples = 1150, append = False, verbose = False):
     """
     Build the saccades csv file and then run logistic regression on it. 
     @param file_dir:  
@@ -220,7 +220,7 @@ if __name__ == "__main__":
                         help = "Path to the directory which contains the traces")
     parser.add_argument("--csv_file", type = str, default = "./labelled_saccades_frequency.csv",
                         help = "File Name to which micro-saccade frequency should be saved")
-    parser.add_argument("--amplitude", type = float, default = 0.15,
+    parser.add_argument("--amplitude", type = float, default = 0.0,
                         help = "Minimum Amplitude to classify as a saccade")
     parser.add_argument("--num_samples", type = int, default = 1150, 
                         help = "Number of Samples to downsample to.")
