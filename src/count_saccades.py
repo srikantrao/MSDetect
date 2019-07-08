@@ -16,7 +16,7 @@ import plot_utils
 import argparse
 
 def count_saccades(file_path, num_samples = 4600, 
-                   amplitude = 0.1, verbose = False):
+                   amplitude = 0.1, verbose = False): #remove the amplitude values you use
     """
     Count the Number of X and Y micro-saccades.
     @file_path: Path to the numpy file.
