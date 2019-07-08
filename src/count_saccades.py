@@ -20,7 +20,8 @@ from utils import validation
 
 def count_saccades(file_path, num_samples = 4600, 
                    amplitude = 0.0, verbose = False,
-                   plot_trace = False):
+                   plot_trace = False,
+                   amplitude = 0.0):
     """
     Count the Number of X and Y micro-saccades.
     @file_path: Path to the numpy file.

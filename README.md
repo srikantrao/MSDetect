@@ -1,10 +1,14 @@
 ## MSDetect - Eye tracking for detection of Mutliple Sclerosis
 
+<<<<<<< HEAD
 This repo contains the work done as an Insight Artifical Intelligence Fellow, consulting for a company that is using state of the art high-resolution pupil tracking hardware combined with AI to change the way Multiple Sclerosis is diagnosed and tracked in patients. 
 
 Recent medical literature has explored the relationship between macular degeneration and the progression of multiple sclerosis in patients.
+=======
+This repo contains the work done as an Insight Artifical Intelligence Fellow, consulting for a company that is using state of the art high-resolution retinal tracking hardware combined with AI to change the way Multiple Sclerosis is diagnosed and tracked in patients. 
+>>>>>>> f9682ccc89242c9083dbb0cc26f18fa9eb41a9c4
 
-The current model uses a model that uses engineering features that are captured by hand-labelling pupil trace data. 
+The current model uses a model that uses engineering features that are captured by hand-labelling retinal trace data. 
 
 I worked on exploring if high-resolution vertical and horizontal motion of the eye can be used to detect the presence of, as well as track the progression of Multiple Sceloris in patients.
 
