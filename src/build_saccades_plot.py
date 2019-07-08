@@ -36,6 +36,7 @@ def autolabel(rects, xpos='center'):
                     textcoords="offset points",  # in both directions
                     ha=ha[xpos], va='bottom')
 
+
 st.write(f"Number of Patient Subjects: {len(subject_dict)}")
 
 """

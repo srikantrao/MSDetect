@@ -138,14 +138,14 @@ def plot_all_traces(file_path, subject_id):
         if i >= len(filt_files):
             continue
         array = np.load(filt_files[i])
-        pl.plot(array[0, 100:4700], label="X trace")
-        pl.plot(array[1, 100:4700], label="Y trace")
+        pl.plot(array[0, 100:4700], label="Horizontal trace")
+        pl.plot(array[1, 100:4700], label="Vertical trace")
         pl.legend(loc="upper right")
         pl.set_title(filt_files[i].split("/")[-1])
         # Set grid as the background 
         pl.set_axisbelow(True)
         pl.yaxis.grid(color = 'gray', linestyle = 'dashed')
         pl.xaxis.grid(color = 'gray', linestyle = 'dashed')
-        pl.set_xlabel("Time Series")
-        pl.set_ylabel("Amplitude Degrees")
+        pl.set_xlabel("Time Series (Seconds)")
+        pl.set_ylabel("Amplitude (Degrees)")
     return fig  
