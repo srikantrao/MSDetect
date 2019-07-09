@@ -11,11 +11,19 @@ I worked on exploring if high-resolution vertical and horizontal motion of the e
 
 Since this work was done as part of a clinical trial, the data, the final models used as well as a subset of results achieved cannot be shared. 
  
-###  Environment Setup  
+###  Environment Setup 
+
+
+#### Source the env file 
+
+```
+source .env 
+```
+ 
 
 #### Ubuntu 18.04 
 
-1. Download and nstall Anaconda for python 3.7
+1. Download and install Anaconda for python 3.7
 
 ```
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
