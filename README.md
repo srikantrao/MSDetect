@@ -9,7 +9,9 @@ The current model uses a model that uses engineering features that are captured 
 
 I worked on exploring if high-resolution vertical and horizontal motion of the eye can be used to detect the presence of, as well as track the progression of Multiple Sceloris in patients.
 
-Since this work was done as part of a clinical trial, the data, the final models used as well as a subset of results achieved cannot be shared. 
+Since the data that this work uses was collected as part of a clinical trial at the company, the data, the final models used as well as a subset of results achieved cannot be shared. 
+
+Please get in touch if you would like more information.
  
 ###  Environment Setup 
 
