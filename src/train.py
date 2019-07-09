@@ -21,9 +21,9 @@ from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import LabelEncoder, PolynomialFeatures
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from xgboost import XGBClassifier
-import utils.pre_processing
-import utils.data_manipulation
-import utils.transforms
+from utils import pre_processing
+from utils import data_manipulation
+from utils import transforms
 
 from models.resnet_model import resnet_build_fn_closure
 from utils.validation import (
@@ -36,7 +36,7 @@ from utils.validation import (
     grouped_metrics,
 )
 
-from models import lstm_model
+from models.lstm_model import LSTM_Model
 
 # Set numpy print options 
 np.set_printoptions(2)
@@ -57,9 +57,9 @@ class Train:
     """
     def ms_classification(
         self,
-        data_dir = "/data/envision_working_traces/",
-        patient_file_path = "../data/patient_stats.csv",
-        model_path = "../models",
+        data_dir = "PATDATA",
+        patient_file_path = "PATSTAT",
+        model_path = "MODELPATH",
         model_name = "model_test",
         num_layers = 8,
         lr = 0.0005,
@@ -114,6 +114,11 @@ class Train:
         """
         job_id = str(uuid.uuid4())
         logger.info(f"Job ID for this run: {job_id}")
+        
+        # Create the paths to the directories 
+        data_dir = os.environ[data_dir]
+        patient_file_path = os.environ[patient_file_path]
+        model_path = os.environ[model_path]
         traces = data_manipulation.readin_traces(
             data_dir, patient_file_path, start_index=100
         )
@@ -147,7 +152,7 @@ class Train:
         # X = pre_processing.use_dist(X)
 
         # Prepare the Data. Augment the data.  
-        X = pre_processing.downsample_traces(X, 512)
+        X = pre_processing.downsample_traces(X, 128)
         
         # Use spectrograms if use_spectrogram is set to True
         if use_spectrogram:
@@ -196,13 +201,19 @@ class Train:
         print(f"Shape of the input is: {input_shape}") 
         
         if use_lstm:
-            model = lstm_model.create_model(input_shape)    
+            model = LSTM_Model(input_shape)    
             
             if verbose:
-                model.summary()
+                model.model.summary()
             
-            lstm_model.run_model(model, X_train, y_train, lr)
-            
+            model.run_model(X_train, y_train, 
+                            lr = lr, epochs = epochs,
+                            batch_size = batch_size)
+            # Save the model.
+            model.save_model(model_path, model_name)
+
+            if verbose:
+                print(f"Model has been saved to {os.path.join(model_path, model_name) + '.h5'}")
         else:
             # Build the Model 
             # Any new model should have this Keras Classifier wrapper.
@@ -224,7 +235,7 @@ class Train:
                 "num_layers": [num_layers],
                 "n_feature_maps": [in_channel],
                 "lr": [lr],
-                "early_stopping": [earl_stopping],
+                "early_stopping": [early_stopping],
                 "kernel_multiple": [1],
             }
 
@@ -232,21 +243,22 @@ class Train:
                 X_train, y_train, subject_ids_train, 
                 num_folds, model, param_grid,
                 model_path, model_name)
+            
+            save_path = Path("~").expanduser() / "cv_runs"
+            # Create the directory if it doesn't exist
+            save_path.mkdir(parents=True, exist_ok=True)
+            save_file = save_path / f"cv_run_{job_id}.csv"
+            cv_results.to_csv(save_file)
         
-        # TODO: Use the X_test set to calculate some metrics 
+        # Use the X_test set to calculate some metrics 
         y_pred = model.predict_proba(X_test)
         test_accuracy = accuracy_score(y_test, np.argmax(y_pred, axis=1))
-
-        print(cv_results)
-        save_path = Path("~").expanduser() / "cv_runs"
-        # Create the directory if it doesn't exist
-        save_path.mkdir(parents=True, exist_ok=True)
-        save_file = save_path / f"cv_run_{job_id}.csv"
-        cv_results.to_csv(save_file)
 
         # Test Accuracy Calculation
         print(f"Test Accuracy of the model is: {test_accuracy:.2f} when tested on {X_test.shape[0]} samples.")
 
 
 if __name__ == "__main__":
+    
+    # Run MS classification 
     fire.Fire(Train)
