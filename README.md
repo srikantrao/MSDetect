@@ -5,8 +5,6 @@ This repo contains the work done as an Insight Artifical Intelligence Fellow, co
 Recent medical literature has explored the relationship between macular degeneration and the progression of multiple sclerosis in patients.
 This repo contains the work done as an Insight Artifical Intelligence Fellow, consulting for a company that is using state of the art high-resolution retinal tracking hardware combined with AI to change the way Multiple Sclerosis is diagnosed and tracked in patients. 
 
-The current model uses a model that uses engineering features that are captured by hand-labelling retinal trace data. 
-
 I worked on exploring if high-resolution vertical and horizontal motion of the eye can be used to detect the presence of, as well as track the progression of Multiple Sceloris in patients.
 
 Since the data that this work uses was collected as part of a clinical trial at the company, the data, the final models used as well as a subset of results achieved cannot be shared. 
