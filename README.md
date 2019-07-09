@@ -108,6 +108,11 @@ Inference can be run on a sample patient trace using the following command along
 python src/inferece.py ms-infer [ARGUMENTS]
 ```
 
+Running it on streamlit will give you additional details along with the plot of the trace. You cannot pass arguments however and will need to use the `Edit Command ` feature in streamlit. 
+```
+streamlit run src/inference.py ms-infer 
+```
+
 ##### Inference Parameters 
 
  - `--model_name`

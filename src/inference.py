@@ -29,12 +29,18 @@ class Inference:
     Running inference on the pupil trace of a patient. 
     Plots the trace and provides prediction based on provided threshold.
     """
-    def ms_infer(self, model_name = "./model/resnet_overfit_6layer.h5",
-                 input_file = "/data/envision_working_traces/20107r_V002_meanrem_480_hz_7738.matvelocity.fig.mat",
-                 patient_file_path="/home/shrikant/EnVision/data/patient_stats.csv",
+    def ms_infer(self, 
+                 model_name = "INF_MODEL",
+                 input_file = "20107r_V002_meanrem_480_hz_7738.matvelocity.fig.mat",
+                 patient_file_path="PATSTAT",
                  plot_trace=True,
                  verbose=True):
-
+        
+        # Generate Directory Paths from Env Variables  
+        patient_file_path = os.environ[patient_file_path]
+        model_name = os.environ[model_name]
+        input_file = os.path.join(os.environ["PATDATA"],
+                                  input_file)
         st.write("Running Inference on Pupil traces ")
 
         # Load the Model
