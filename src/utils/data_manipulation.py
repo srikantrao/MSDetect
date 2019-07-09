@@ -238,11 +238,6 @@ def downsample_traces(X: np.ndarray, num_samples: int) -> np.ndarray:
     return scipy.signal.resample(X, num_samples, axis=2)
 
 
-"""
-The below is taken from EnVision/utils/readinutils.py
-"""
-
-
 class EyeTrace:
     """A class to contain eye trace information
     Parameters:
@@ -378,7 +373,7 @@ class EyeTrace:
 
 
 def read_n_filter(filename, subinfo, version,
-                  start_index=0, stop_index = 4799):
+                  start_index=0, stop_index = 4800):
     """
     Read in our files, filter them, and return an eyetrace instance
     Parameters:

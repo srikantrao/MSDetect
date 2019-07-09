@@ -148,4 +148,13 @@ python count_saccades.py [ARGUMENTS]
 - `--append`
 	- Append to an existing csv file if you are trying it on a smaller subset. Default value is `False` and it is not recommended that this be changed.
  - `--patients_file`
-	- Path to the file that contains the information of the patients involved in the trial.   
+	- Path to the file that contains the information of the patients involved in the trial.  
+
+#### Running tests 
+
+Run this following commands from the root directory 
+
+```
+source .env 
+pytest
+``` 

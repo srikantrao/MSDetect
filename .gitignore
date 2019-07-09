@@ -1,6 +1,6 @@
 data/*
 param/*
-models/*
+model/*
 logs/*
 *.pyc
 src/models/lstm_model.py

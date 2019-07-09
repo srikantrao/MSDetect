@@ -2,7 +2,7 @@
 
 
 # Import Statements 
-import utils.data_manipulation
+from utils import data_manipulation
 import os 
 import re
 
@@ -28,6 +28,7 @@ def read_single_trace(filepath, patient_file_path, start_index = 10):
     subinfo = pf[pf["Subject ID"] == subj_id]
     
     # Read in the trace
-    trace = data_manipulation.read_n_filter(filepath, subinfo, start_index)
+    trace = data_manipulation.read_n_filter(filepath, subinfo, 
+                                            version = 9, start_index = 10)
 
     return trace
