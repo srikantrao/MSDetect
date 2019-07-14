@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import streamlit as st 
 import glob 
 import os
+from scipy.io import wavfile 
+from utils import inference_utils
+from utils import pre_processing 
 
 def plotXY(array, xlabel, ylabel, use_streamlit, title="Simple Plot"):
     """
@@ -148,4 +151,24 @@ def plot_all_traces(file_path, subject_id):
         pl.xaxis.grid(color = 'gray', linestyle = 'dashed')
         pl.set_xlabel("Time Series (Seconds)")
         pl.set_ylabel("Amplitude (Degrees)")
-    return fig  
+    return fig 
+
+def plot_spectrogram(data, NFFT = 256, noverlap = 128,
+                     sampling_frequency = 480):
+    """
+    Plot the spectrogram of the Input traces.
+    """
+    nchannels = data.dim
+    
+    if nchannels == 1:
+        pxx, freqs, bins, im = plt.specgram(data, nfft, fs, 
+                                            noverlap = noverlap)
+    elif nchannels == 2:
+        pxx, freqs, bins, im = plt.specgram(data[:, 0], nfft, fs, noverlap = noverlap)
+    
+    plt.xlabel("Time")
+    plt.ylabel("Frequency")
+    plt.title("Spectrogram of Pupil trace") 
+    
+    # Streamlit plot 
+    st.pyplot()

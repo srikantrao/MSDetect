@@ -44,8 +44,8 @@ class Inference:
         st.write("Running Inference on Pupil traces ")
 
         # Load the Model
-        inference_model = load_model(str(model_name))
-
+        inference_model = load_model(model_name)
+ 
         if verbose:
             inference_model.summary()
 
@@ -57,12 +57,12 @@ class Inference:
             st.write(f"Matrix file has been loaded.")
             st.write(f"Shape of the input trace is:{trace.xraw.shape[0]}")
         # Get Hold of all the features used
-        X, y, subject_ids = pre_processing.traces_to_feature([trace], velocity=False, mean_center=True, scale_std=True)
+        X, y, subject_ids = pre_processing.traces_to_feature([trace], velocity = False, mean_center = False, scale_std = False)
         
         # Make inputs channel last 
         X = data_manipulation.channel_last(X)
         y = y.astype(np.int32).squeeze()
-        
+        st.write(X[:, :100, 0]) 
         if plot_trace:
             plot_utils.plotXY(X, "Time Steps", "Position", use_streamlit=True, title="X and Y Pupil traces")
 

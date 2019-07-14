@@ -1,5 +1,4 @@
 """ Contains all the methods that are used to perform pre-processing steps on the XY traces 
-    Author - Srikant Rao
 """
 # Import Statements 
 import os 
