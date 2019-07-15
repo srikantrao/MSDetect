@@ -12,6 +12,8 @@ import scipy.signal
 import argparse
 import fire
 import os
+import sys
+import glob 
 from keras.models import load_model
 from utils import data_manipulation
 from utils import pre_processing
@@ -39,30 +41,59 @@ class Inference:
         # Generate Directory Paths from Env Variables  
         patient_file_path = os.environ[patient_file_path]
         model_name = os.environ[model_name]
-        input_file = os.path.join(os.environ["PATDATA"],
-                                  input_file)
-        st.write("Running Inference on Pupil traces ")
+        st.write("## Running Inference on Pupil traces ")
+        
+        # Building a list of Patient IDs to choose from 
+        patient_list, pat_str_list = inference_utils.load_patient_ids(patient_file_path)
+        
+        index = st.selectbox(label = "Select the Patient ID",
+                             options = pat_str_list)
+        
+        # Get hold of all the files of that particular subject 
+        file_list = inference_utils.get_file_list(patient_list[index])
+
+        # Find version of the traces available
+        ver_list = inference_utils.get_ver_list(file_list)
+
+        # Select the version of the  trace 
+        ver_index = st.selectbox(label = "Select trace version",
+                                 options = ver_list)
+
+        # Filter file list by version 
+        file_list = inference_utils.filter_by_version(file_list, ver_list[ver_index])
+
+        # Find if both right eye and left eye are available 
+        eye_list, eye_str_list = inference_utils.get_eye_list(file_list) 
+
+        # Select the version of the eyes available 
+        eye_index = st.selectbox(label = "Select Right or Left Eye",
+                                 options = eye_str_list)
+        
+        # Filter the list by the eye that was selected 
+        file_list = inference_utils.filter_by_eye(file_list, eye_list[eye_index])
+ 
+        st.write(f"Inference is being run on **Patient ID: {patient_list[index]}** on **{ver_list[ver_index]}** and on the **{eye_str_list[eye_index].lower()}** trace")
 
         # Load the Model
         inference_model = load_model(model_name)
  
         if verbose:
             inference_model.summary()
-
+        
         # Load the Input trace
+        input_file = file_list[0]
         trace = inference_utils.read_single_trace(input_file,
                                                   patient_file_path,
                                                   start_index = 10)
         if verbose:
-            st.write(f"Matrix file has been loaded.")
-            st.write(f"Shape of the input trace is:{trace.xraw.shape[0]}")
+            st.write(f"Pupil trace has been loaded.")
         # Get Hold of all the features used
         X, y, subject_ids = pre_processing.traces_to_feature([trace], velocity = False, mean_center = False, scale_std = False)
         
         # Make inputs channel last 
         X = data_manipulation.channel_last(X)
         y = y.astype(np.int32).squeeze()
-        st.write(X[:, :100, 0]) 
+        
         if plot_trace:
             plot_utils.plotXY(X, "Time Steps", "Position", use_streamlit=True, title="X and Y Pupil traces")
 
