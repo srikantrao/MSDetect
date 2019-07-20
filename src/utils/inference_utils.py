@@ -3,11 +3,39 @@
 
 # Import Statements 
 import numpy as np
-import pandas as pd 
+import pandas as pd
+import streamlit as st
 from utils import data_manipulation
 import os 
 import re
-import glob 
+import glob
+
+
+def show_ui(file_list, pat_str_list):
+    """
+    Return the filtered file_list (should be only 1 by the end of it). 
+    """
+    if not file_list:
+        st.warning('This Patient ID does not exist. Please reselect.')
+        return None
+    index = st.selectbox(label = "Select the Patient ID",
+                               options = pat_str_list)
+
+    # second select box
+    ver_list = get_ver_list
+    if not options_2:
+        st.warning('No options for %s. Please select another.' % selection_1)
+        return None
+    selection_2 = st.selectbox('selection for %s' % selection_1, options_2)
+
+    # third select box
+    options_3 = get_options_for_select_box_3(selection_2)
+    if not options_3:
+        st.warning('No options for %s. Please select another.' % selection_2)
+        return
+    selection_3 = st.selectbox('selection for %s' % selection_2, options_3)
+    return (selection_1, selection_2, selection_3)
+
 
 def filter_by_eye(file_list, eye):
     """

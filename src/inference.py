@@ -54,68 +54,73 @@ class Inference:
 
         # Find version of the traces available
         ver_list = inference_utils.get_ver_list(file_list)
+        if not ver_list:
+            st.error(f"No traces for this {patient_list[index]}")
+            return 
 
         # Select the version of the  trace 
-        ver_index = st.selectbox(label = "Select trace version",
+        ver_index = st.selectbox(label = f"Select trace version for {patient_list[index]}",
                                  options = ver_list)
-
-        # Filter file list by version 
         file_list = inference_utils.filter_by_version(file_list, ver_list[ver_index])
 
         # Find if both right eye and left eye are available 
         eye_list, eye_str_list = inference_utils.get_eye_list(file_list) 
 
+        if not eye_list:
+            st.error(f"No traces for this {patient_list[index]} and {ver_index}")
         # Select the version of the eyes available 
         eye_index = st.selectbox(label = "Select Right or Left Eye",
                                  options = eye_str_list)
         
-        # Filter the list by the eye that was selected 
+        # Filter the list by the eye that was selected
         file_list = inference_utils.filter_by_eye(file_list, eye_list[eye_index])
- 
         st.write(f"Inference is being run on **Patient ID: {patient_list[index]}** on **{ver_list[ver_index]}** and on the **{eye_str_list[eye_index].lower()}** trace")
-
-        # Load the Model
-        inference_model = load_model(model_name)
+             
+        # Add the play button here. Maybe that might be better 
+        if st.button("Play"):
+            # Load the Model
+            inference_model = load_model(model_name)
  
-        if verbose:
-            inference_model.summary()
+            if verbose:
+                inference_model.summary()
         
-        # Load the Input trace
-        input_file = file_list[0]
-        trace = inference_utils.read_single_trace(input_file,
-                                                  patient_file_path,
-                                                  start_index = 10)
-        if verbose:
-            st.write(f"Pupil trace has been loaded.")
-        # Get Hold of all the features used
-        X, y, subject_ids = pre_processing.traces_to_feature([trace], velocity = False, mean_center = False, scale_std = False)
+            # Load the Input trace
+            input_file = file_list[0]
+            trace = inference_utils.read_single_trace(input_file,
+                                                      patient_file_path,
+                                                      start_index = 10)
+            if verbose:
+                st.write(f"Pupil trace has been loaded.")
+            # Get Hold of all the features used
+            X, y, subject_ids = pre_processing.traces_to_feature([trace], velocity = False, mean_center = False, scale_std = False)
         
-        # Make inputs channel last 
-        X = data_manipulation.channel_last(X)
-        y = y.astype(np.int32).squeeze()
+            # Make inputs channel last 
+            X = data_manipulation.channel_last(X)
+            y = y.astype(np.int32).squeeze()
         
-        if plot_trace:
-            plot_utils.plotXY(X, "Time Steps", "Position", use_streamlit=True, title="X and Y Pupil traces")
+            if plot_trace:
+                plot_utils.plotXY(X, "Time Steps", "Position", use_streamlit=True, title="X and Y Pupil traces")
 
-        # Predict the label
-        y_pred = inference_model.predict(X)
+            # Predict the label
+            y_pred = inference_model.predict(X)
 
-        # Predict the output of the trace
-        y_est = np.argmax(y_pred)
+            # Predict the output of the trace
+            y_est = np.argmax(y_pred)
 
-        if y_est == y:
-            st.write(f"Correct prediction. Label : {y}. Predicted: {y_est}")
-        else:
-            st.write(f"Wrong Prediciton. Label : {y}. Predicted: {y_est}")
+            if y_est == y:
+                st.write(f"Correct prediction. Label : {y}. Predicted: {y_est}")
+            else:
+                st.write(f"Wrong Prediciton. Label : {y}. Predicted: {y_est}")
        
-        # Print out additional information
-        if verbose:
-            st.write(f"Probability that the patient does not have MS: {y_pred[0,0]:.2f}")
-            st.write(f"Probability that the patient has M.S: {y_pred[0,1]:.2f}")
-            if y == 1:
-                st.write(f"EDSS Score is: {trace.sub_edss}")
+            # Print out additional information
+            if verbose:
+                st.write(f"Probability that the patient does not have MS: {y_pred[0,0]:.2f}")
+                st.write(f"Probability that the patient has M.S: {y_pred[0,1]:.2f}")
+                if y == 1:
+                    st.write(f"EDSS Score is: {trace.sub_edss}")
         
 
 if __name__ == "__main__":
     
     fire.Fire(Inference)
+
