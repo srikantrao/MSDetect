@@ -33,14 +33,14 @@ bash Miniconda3-latest-Linux-x86_64.sh
 Run the following command from the terminal 
 
 ```
-conda env create -f environment_linux.yml
+conda env create -f build/environment_linux.yml
 conda activate msdetect
 ```
 
 #### Running on Mac 
 
 ```
-conda env create -f environment_mac.yml
+conda env create -f build/environment_mac.yml
 conda activate msdetect
 
 ```
